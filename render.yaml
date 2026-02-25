@@ -1,0 +1,6 @@
+databases:
+  - name: onsiteit-db
+    plan: free
+    region: singapore
+    databaseName: onsiteit
+    user: onsiteit_user

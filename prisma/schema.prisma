@@ -1,0 +1,208 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  admin
+  contractor
+  customer
+}
+
+enum ContractorStatus {
+  available
+  busy
+  offline
+}
+
+enum JobStatus {
+  pending
+  assigned
+  in_progress
+  completed
+  cancelled
+}
+
+enum JobPriority {
+  low
+  medium
+  high
+  urgent
+}
+
+enum QuoteStatus {
+  draft
+  sent
+  accepted
+  declined
+}
+
+enum InvoiceStatus {
+  draft
+  sent
+  paid
+  overdue
+}
+
+enum PayStatus {
+  pending
+  paid
+}
+
+enum RequestStatus {
+  pending
+  matched
+  confirmed
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         UserRole
+  name         String
+  createdAt    DateTime @default(now())
+
+  contractorProfile ContractorProfile?
+  customerProfile   CustomerProfile?
+}
+
+model ContractorProfile {
+  id             String           @id @default(cuid())
+  userId         String           @unique
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone          String
+  abn            String
+  skills         String[]
+  serviceSuburbs String[]
+  hourlyRate     Float
+  rating         Float            @default(0)
+  status         ContractorStatus @default(available)
+  availability   Json
+  joinedDate     String
+
+  jobs          Job[]          @relation("ContractorJobs")
+  quotes        Quote[]        @relation("ContractorQuotes")
+  contractorPay ContractorPay[]
+  jobRequests   JobRequest[]   @relation("MatchedContractor")
+}
+
+model CustomerProfile {
+  id            String @id @default(cuid())
+  userId        String @unique
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone         String
+  address       String
+  suburb        String
+  state         String @default("NSW")
+  postcode      String
+  notes         String @default("")
+  paymentMethod String @default("")
+  joinedDate    String
+
+  jobs        Job[]
+  quotes      Quote[]
+  invoices    Invoice[]
+  jobRequests JobRequest[]
+}
+
+model Job {
+  id            String             @id @default(cuid())
+  customerId    String
+  customer      CustomerProfile    @relation(fields: [customerId], references: [id])
+  contractorId  String?
+  contractor    ContractorProfile? @relation("ContractorJobs", fields: [contractorId], references: [id])
+  title         String
+  description   String             @default("")
+  type          String
+  status        JobStatus          @default(pending)
+  priority      JobPriority        @default(medium)
+  scheduledDate DateTime
+  completedDate DateTime?
+  address       String
+  suburb        String
+  laborHours    Float              @default(0)
+  laborRate     Float              @default(0)
+  partsUsed     Json               @default("[]")
+  totalAmount   Float              @default(0)
+  notes         String[]
+  createdAt     DateTime           @default(now())
+
+  invoice Invoice?
+}
+
+model InventoryItem {
+  id       String @id @default(cuid())
+  name     String
+  sku      String @unique
+  category String
+  stock    Int    @default(0)
+  minStock Int    @default(0)
+  unitCost Float  @default(0)
+  supplier String
+}
+
+model Quote {
+  id           String             @id @default(cuid())
+  quoteNumber  String             @unique
+  customerId   String
+  customer     CustomerProfile    @relation(fields: [customerId], references: [id])
+  contractorId String?
+  contractor   ContractorProfile? @relation("ContractorQuotes", fields: [contractorId], references: [id])
+  status       QuoteStatus        @default(draft)
+  lineItems    Json               @default("[]")
+  total        Float              @default(0)
+  notes        String             @default("")
+  expiryDate   DateTime
+  createdAt    DateTime           @default(now())
+}
+
+model Invoice {
+  id            String          @id @default(cuid())
+  invoiceNumber String          @unique
+  customerId    String
+  customer      CustomerProfile @relation(fields: [customerId], references: [id])
+  jobId         String          @unique
+  job           Job             @relation(fields: [jobId], references: [id])
+  status        InvoiceStatus   @default(draft)
+  lineItems     Json            @default("[]")
+  subtotal      Float           @default(0)
+  gst           Float           @default(0)
+  total         Float           @default(0)
+  dueDate       DateTime
+  paidDate      DateTime?
+  createdAt     DateTime        @default(now())
+}
+
+model ContractorPay {
+  id            String            @id @default(cuid())
+  contractorId  String
+  contractor    ContractorProfile @relation(fields: [contractorId], references: [id])
+  period        String
+  hoursLogged   Float             @default(0)
+  jobsCompleted Int               @default(0)
+  grossAmount   Float             @default(0)
+  status        PayStatus         @default(pending)
+  payDate       String?
+  createdAt     DateTime          @default(now())
+}
+
+model JobRequest {
+  id                  String             @id @default(cuid())
+  customerId          String
+  customer            CustomerProfile    @relation(fields: [customerId], references: [id])
+  serviceType         String
+  description         String
+  address             String
+  suburb              String
+  preferredDates      String[]
+  preferredTime       String
+  priority            String             @default("normal")
+  status              RequestStatus      @default(pending)
+  matchedContractorId String?
+  matchedContractor   ContractorProfile? @relation("MatchedContractor", fields: [matchedContractorId], references: [id])
+  createdAt           DateTime           @default(now())
+}
