@@ -120,8 +120,4 @@ src/components/
 - `JobRow.status` uses hyphens (`in-progress`), Prisma enum uses underscores (`in_progress`) — `fromDbStatus()` / `toDbStatus()` in `src/lib/job-status.ts` handles conversion
 
 ## Pending Tasks
-- Run `npx prisma migrate dev --name init` against the Render DB
-- Run `npx prisma db seed`
-- Add `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL` to Vercel env vars
-- Create `/register` page for new customer sign-up
-- Delete `src/lib/mock-data.ts` (no longer imported by any page)
+- None — all initial tasks complete.
