@@ -1,5 +1,6 @@
 'use server'
 import { z } from 'zod'
+import { hash } from 'bcryptjs'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { ok, err, type ActionResult } from './result'
@@ -117,6 +118,54 @@ const updateSchema = z.object({
   notes: z.string().optional(),
   paymentMethod: z.string().optional(),
 })
+
+const createCustomerSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  phone: z.string().min(1),
+  address: z.string().min(1),
+  suburb: z.string().min(1),
+  postcode: z.string().min(1),
+  notes: z.string().optional(),
+})
+
+export async function createCustomer(input: z.infer<typeof createCustomerSchema>): Promise<ActionResult<CustomerRow>> {
+  const session = await auth()
+  if (!session || session.user.role !== 'admin') return err('Forbidden')
+
+  const parsed = createCustomerSchema.safeParse(input)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
+
+  const { name, email, phone, address, suburb, postcode, notes } = parsed.data
+
+  try {
+    const existing = await prisma.user.findUnique({ where: { email } })
+    if (existing) return err('A user with that email already exists')
+
+    const passwordHash = await hash('password123', 12)
+    const today = new Date().toISOString().slice(0, 10)
+
+    const profile = await prisma.customerProfile.create({
+      data: {
+        phone, address, suburb, postcode,
+        notes: notes ?? '',
+        state: 'NSW',
+        paymentMethod: 'Not set',
+        joinedDate: today,
+        user: {
+          create: { name, email, passwordHash, role: 'customer' },
+        },
+      },
+      include: {
+        user: { select: { name: true, email: true } },
+        _count: { select: { jobs: true } },
+      },
+    })
+    return ok(mapCustomer({ ...profile, jobs: [] } as Parameters<typeof mapCustomer>[0]))
+  } catch {
+    return err('Database error')
+  }
+}
 
 export async function updateCustomerProfile(input: z.infer<typeof updateSchema>): Promise<ActionResult<{ id: string }>> {
   const session = await auth()

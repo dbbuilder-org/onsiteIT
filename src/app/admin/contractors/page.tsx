@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { StatusBadge } from '@/components/shared/StatusBadge'
-import { getContractors, type ContractorRow } from '@/lib/actions/contractors'
+import { getContractors, createContractor, type ContractorRow } from '@/lib/actions/contractors'
 import { skills as allSkills } from '@/lib/constants'
 import { formatCurrency, getInitials } from '@/lib/utils'
 import { Plus, Search, Star, Briefcase, DollarSign, Phone, Mail, MapPin } from 'lucide-react'
@@ -21,6 +21,8 @@ export default function ContractorsPage() {
   const [toast, setToast] = useState('')
   const [selectedContractor, setSelectedContractor] = useState<ContractorRow | null>(null)
   const [newContractor, setNewContractor] = useState({ name: '', email: '', phone: '', hourlyRate: '85', abn: '' })
+  const [addError, setAddError] = useState('')
+  const [addSaving, setAddSaving] = useState(false)
 
   useEffect(() => {
     getContractors().then(r => r.success && setContractors(r.data))
@@ -36,25 +38,22 @@ export default function ContractorsPage() {
     return matchSearch && matchStatus && matchSkill
   })
 
-  const handleAdd = () => {
-    const c: ContractorRow = {
-      id: `ct${Date.now()}`,
-      userId: '',
+  const handleAdd = async () => {
+    setAddError('')
+    setAddSaving(true)
+    const result = await createContractor({
       ...newContractor,
       hourlyRate: Number(newContractor.hourlyRate),
-      skills: [],
-      serviceSuburbs: [],
-      suburbs: [],
-      rating: 5.0,
-      status: 'available',
-      availability: {},
-      currentJobs: 0,
-      completedJobs: 0,
-      joinedDate: new Date().toISOString(),
+    })
+    setAddSaving(false)
+    if (result.success) {
+      setContractors(prev => [result.data, ...prev])
+      setNewContractor({ name: '', email: '', phone: '', hourlyRate: '85', abn: '' })
+      setAddOpen(false)
+      showToast('Contractor added successfully')
+    } else {
+      setAddError(result.error)
     }
-    setContractors(prev => [c, ...prev])
-    setAddOpen(false)
-    showToast('Contractor added successfully')
   }
 
   const topSkills = ['Networking', 'Windows Repair', 'Server Setup', 'CCTV Installation', 'Data Recovery', 'Mac Repair']
@@ -79,6 +78,9 @@ export default function ContractorsPage() {
           <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>Add New Contractor</DialogTitle></DialogHeader>
             <div className="space-y-3 mt-2">
+              {addError && (
+                <p className="text-sm text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded-lg">{addError}</p>
+              )}
               {[
                 { label: 'Full Name', key: 'name', placeholder: 'Jane Smith' },
                 { label: 'Email', key: 'email', placeholder: 'jane@example.com' },
@@ -94,7 +96,9 @@ export default function ContractorsPage() {
                   />
                 </div>
               ))}
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={handleAdd}>Add Contractor</Button>
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={handleAdd} disabled={addSaving}>
+                {addSaving ? 'Adding...' : 'Add Contractor'}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

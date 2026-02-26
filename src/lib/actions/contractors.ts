@@ -1,5 +1,6 @@
 'use server'
 import { z } from 'zod'
+import { hash } from 'bcryptjs'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { ok, err, type ActionResult } from './result'
@@ -92,6 +93,54 @@ export async function getMyContractorProfile(): Promise<ActionResult<ContractorR
     const c = await prisma.contractorProfile.findUnique({ where: { userId: session.user.id }, include })
     if (!c) return err('Not found')
     return ok(mapContractor(c as Parameters<typeof mapContractor>[0]))
+  } catch {
+    return err('Database error')
+  }
+}
+
+const createContractorSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  phone: z.string().min(1),
+  abn: z.string().min(1),
+  hourlyRate: z.number().min(1),
+})
+
+export async function createContractor(input: z.infer<typeof createContractorSchema>): Promise<ActionResult<ContractorRow>> {
+  const session = await auth()
+  if (!session || session.user.role !== 'admin') return err('Forbidden')
+
+  const parsed = createContractorSchema.safeParse(input)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
+
+  const { name, email, phone, abn, hourlyRate } = parsed.data
+
+  try {
+    const existing = await prisma.user.findUnique({ where: { email } })
+    if (existing) return err('A user with that email already exists')
+
+    const passwordHash = await hash('password123', 12)
+    const today = new Date().toISOString().slice(0, 10)
+
+    const profile = await prisma.contractorProfile.create({
+      data: {
+        phone, abn, hourlyRate,
+        skills: [],
+        serviceSuburbs: [],
+        rating: 5.0,
+        status: 'available',
+        availability: {},
+        joinedDate: today,
+        user: {
+          create: { name, email, passwordHash, role: 'contractor' },
+        },
+      },
+      include: {
+        user: { select: { name: true, email: true } },
+        _count: { select: { jobs: true } },
+      },
+    })
+    return ok(mapContractor({ ...profile, _count: { jobs: 0 } }))
   } catch {
     return err('Database error')
   }

@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { StatusBadge } from '@/components/shared/StatusBadge'
-import { getCustomers, type CustomerRow } from '@/lib/actions/customers'
+import { getCustomers, createCustomer, type CustomerRow } from '@/lib/actions/customers'
 import { formatCurrency, formatDate, getInitials } from '@/lib/utils'
 import { Plus, Search, Mail, Phone, MapPin, Briefcase, DollarSign, Edit, Trash2, ChevronDown, ChevronUp } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -21,6 +21,8 @@ export default function CustomersPage() {
   const [editCustomer, setEditCustomer] = useState<CustomerRow | null>(null)
   const [toast, setToast] = useState('')
   const [newCustomer, setNewCustomer] = useState({ name: '', email: '', phone: '', address: '', suburb: '', postcode: '', notes: '' })
+  const [addError, setAddError] = useState('')
+  const [addSaving, setAddSaving] = useState(false)
 
   useEffect(() => {
     getCustomers().then(r => r.success && setCustomers(r.data))
@@ -39,22 +41,19 @@ export default function CustomersPage() {
     return matchSearch && matchStatus
   })
 
-  const handleAdd = () => {
-    const c: CustomerRow = {
-      id: `c${Date.now()}`,
-      userId: '',
-      ...newCustomer,
-      state: 'NSW',
-      totalJobs: 0,
-      totalSpend: 0,
-      status: 'active',
-      joinedDate: new Date().toISOString(),
-      paymentMethod: 'Not set'
+  const handleAdd = async () => {
+    setAddError('')
+    setAddSaving(true)
+    const result = await createCustomer(newCustomer)
+    setAddSaving(false)
+    if (result.success) {
+      setCustomers(prev => [result.data, ...prev])
+      setNewCustomer({ name: '', email: '', phone: '', address: '', suburb: '', postcode: '', notes: '' })
+      setAddOpen(false)
+      showToast('Customer added successfully')
+    } else {
+      setAddError(result.error)
     }
-    setCustomers(prev => [c, ...prev])
-    setNewCustomer({ name: '', email: '', phone: '', address: '', suburb: '', postcode: '', notes: '' })
-    setAddOpen(false)
-    showToast('Customer added successfully')
   }
 
   const handleDelete = (id: string) => {
@@ -87,6 +86,9 @@ export default function CustomersPage() {
               <DialogTitle>Add New Customer</DialogTitle>
             </DialogHeader>
             <div className="space-y-3 mt-2">
+              {addError && (
+                <p className="text-sm text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded-lg">{addError}</p>
+              )}
               {[
                 { label: 'Full Name', key: 'name', placeholder: 'John Smith' },
                 { label: 'Email', key: 'email', placeholder: 'john@email.com' },
@@ -114,8 +116,8 @@ export default function CustomersPage() {
                   onChange={(e) => setNewCustomer(prev => ({ ...prev, notes: e.target.value }))}
                 />
               </div>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={handleAdd}>
-                Add Customer
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={handleAdd} disabled={addSaving}>
+                {addSaving ? 'Adding...' : 'Add Customer'}
               </Button>
             </div>
           </DialogContent>
