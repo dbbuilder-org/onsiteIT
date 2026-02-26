@@ -1,7 +1,7 @@
 # OnsiteIT — Project Status Report
 **Prepared for:** OnsiteIT Client
 **Prepared by:** ServiceVision
-**Date:** 26 February 2026
+**Date:** 27 February 2026
 **Live URL:** https://onsiteit.servicevision.io
 
 ---
@@ -241,8 +241,6 @@ The following items are identified as next-phase work:
 | Issue | Detail | Workaround / Resolution |
 |-------|--------|------------------------|
 | **Render new-instance TLS** | Render PostgreSQL instances provisioned today exhibit a TLS handshake failure that prevents external connections for several hours after creation. Affects macOS psql, Node.js pg, and GitHub Actions. | Database runs on a proven instance (6+ weeks old). No user impact. |
-| **mock-data.ts still in repo** | The original mock data file (`src/lib/mock-data.ts`) is no longer imported by any page but still exists in the repository. | Delete when convenient — it has no runtime impact. |
-| **GitHub Actions deploy token** | The `VERCEL_TOKEN` secret stored in GitHub Actions is stale. The GitHub Actions deploy workflow fails; however, Vercel's own GitHub integration deploys correctly on every push. | Update `VERCEL_TOKEN` in GitHub repository secrets. |
 | **No customer self-registration** | New customers must be added manually to the database. | Build `/register` page (next-phase item). |
 
 ---
@@ -272,11 +270,12 @@ Use the demo credentials above, or ask your administrator to create a new accoun
 ## How Deployments Work
 
 1. A developer pushes code to the `main` branch on GitHub
-2. Vercel detects the push via its GitHub integration
-3. Vercel builds the application (`prisma generate && next build`)
-4. If the build passes, Vercel automatically promotes the new build to production
-5. The live site at https://onsiteit.servicevision.io is updated within ~45 seconds
-6. Zero downtime — Vercel swaps deployments atomically
+2. GitHub Actions triggers the deploy workflow (`.github/workflows/deploy.yml`)
+3. The workflow calls the Vercel API to trigger a production deployment
+4. Vercel builds the application (`prisma generate && next build`)
+5. If the build passes, Vercel automatically promotes the new build to production
+6. The live site at https://onsiteit.servicevision.io is updated within ~45 seconds
+7. Zero downtime — Vercel swaps deployments atomically
 
 No manual steps are required for a standard deployment.
 
