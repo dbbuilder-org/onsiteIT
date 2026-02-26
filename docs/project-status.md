@@ -1,7 +1,7 @@
 # OnsiteIT — Project Status Report
 **Prepared for:** OnsiteIT Client
 **Prepared by:** ServiceVision
-**Date:** 27 February 2026
+**Date:** 28 February 2026
 **Live URL:** https://onsiteit.servicevision.io
 
 ---
@@ -52,6 +52,7 @@ Accessible only to users with the `customer` role:
 
 | Page | What it does |
 |------|-------------|
+| **Registration** (`/register`) | Public self-service sign-up — collects name, email, password, phone, and address. Creates a customer account and signs the user in automatically. |
 | **Dashboard** | Personalised greeting. Summary of open jobs, total spent on paid invoices. |
 | **My Jobs** | Job history and status tracking. Open job requests (pre-assignment) shown separately. |
 | **Book a Job** | Multi-step service booking wizard — service type, description, address prefill from profile, preferred dates/times, urgency level. Submits to the matching queue. |
@@ -213,7 +214,6 @@ The following items are identified as next-phase work:
 ### High Priority
 | Feature | Notes |
 |---------|-------|
-| **Customer registration page** (`/register`) | Currently customers must be created manually in the database or by an admin. A self-service sign-up page needs to be added. |
 | **Email notifications** | Job assignment, invoice sent, and booking confirmation emails. Recommend Resend or SendGrid. |
 
 ### Medium Priority
@@ -241,7 +241,6 @@ The following items are identified as next-phase work:
 | Issue | Detail | Workaround / Resolution |
 |-------|--------|------------------------|
 | **Render new-instance TLS** | Render PostgreSQL instances provisioned today exhibit a TLS handshake failure that prevents external connections for several hours after creation. Affects macOS psql, Node.js pg, and GitHub Actions. | Database runs on a proven instance (6+ weeks old). No user impact. |
-| **No customer self-registration** | New customers must be added manually to the database. | Build `/register` page (next-phase item). |
 
 ---
 
