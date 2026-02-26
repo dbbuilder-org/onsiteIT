@@ -1,7 +1,7 @@
 # OnsiteIT — Project Status Report
 **Prepared for:** OnsiteIT Client
 **Prepared by:** ServiceVision
-**Date:** 1 March 2026
+**Date:** 2 March 2026
 **Live URL:** https://onsiteit.servicevision.io
 
 ---
@@ -10,7 +10,7 @@
 
 OnsiteIT is a **Field Service Management (FSM) web application** purpose-built for an Australian IT contracting business. The platform provides three separate, role-based portals — for administrators, contractors, and customers — all running on a single Next.js 16 application with a shared PostgreSQL database backend.
 
-The application has been fully built and is now live at **https://onsiteit.servicevision.io**. The contractor and customer portals are fully mobile-optimised and work correctly on phones and tablets.
+The application has been fully built and is now live at **https://onsiteit.servicevision.io**. All three portals — admin, contractor, and customer — are fully mobile-optimised and work correctly on phones and tablets.
 
 ---
 
@@ -66,7 +66,7 @@ Accessible only to users with the `customer` role:
 | Layer | Technology |
 |-------|-----------|
 | **Frontend** | Next.js 16.1.6 · React 19 · TypeScript (strict) |
-| **UI** | Tailwind CSS v4 · shadcn/ui (Radix UI primitives) · lucide-react icons · Recharts · mobile-responsive (all contractor and customer pages) |
+| **UI** | Tailwind CSS v4 · shadcn/ui (Radix UI primitives) · lucide-react icons · Recharts · mobile-responsive (all three portals) |
 | **Auth** | NextAuth.js v5 (beta) · Credentials provider · JWT sessions · Role-based route guards |
 | **Database** | PostgreSQL 18 (Render, Oregon region) |
 | **ORM** | Prisma v7 with `@prisma/adapter-pg` driver adapter |
