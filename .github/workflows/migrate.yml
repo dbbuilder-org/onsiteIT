@@ -16,6 +16,6 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Push schema
-        run: npx prisma db push --skip-generate
+        run: npx prisma db push
       - name: Seed database
         run: npx prisma db seed
