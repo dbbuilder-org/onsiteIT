@@ -28,7 +28,7 @@ export default function SettingsPage() {
       <h2 className="text-xl font-bold text-slate-800">Settings</h2>
 
       <Tabs defaultValue="company">
-        <TabsList className="mb-4">
+        <TabsList className="mb-4 flex flex-wrap h-auto gap-1">
           <TabsTrigger value="company"><Building2 className="h-4 w-4 mr-1.5" />Company</TabsTrigger>
           <TabsTrigger value="integrations"><Mail className="h-4 w-4 mr-1.5" />Integrations</TabsTrigger>
           <TabsTrigger value="payments"><CreditCard className="h-4 w-4 mr-1.5" />Payments</TabsTrigger>
@@ -42,7 +42,7 @@ export default function SettingsPage() {
               <CardTitle className="text-base">Company Profile</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   { label: 'Company Name', key: 'name' },
                   { label: 'ABN', key: 'abn' },
@@ -74,13 +74,13 @@ export default function SettingsPage() {
               { name: 'Accounting', desc: 'Sync invoices to accounting software', provider: 'Xero', connected: false },
             ].map(integration => (
               <Card key={integration.name} className="border-0 shadow-sm">
-                <CardContent className="p-4 flex items-center justify-between">
+                <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <p className="font-semibold text-slate-800">{integration.name}</p>
                     <p className="text-sm text-slate-500">{integration.desc}</p>
                     <span className="text-xs text-blue-600 font-medium">via {integration.provider}</span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 sm:flex-shrink-0">
                     <span className={`text-xs font-medium px-2 py-1 rounded-full ${integration.connected ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
                       {integration.connected ? 'Connected' : 'Not connected'}
                     </span>
@@ -105,7 +105,7 @@ export default function SettingsPage() {
                   <p className="text-sm text-green-700">Account: acct_1234...5678 • Mode: Live</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm">Publishable Key</Label>
                   <Input className="mt-1 font-mono text-xs" value="pk_live_**********************" readOnly />
@@ -173,8 +173,8 @@ export default function SettingsPage() {
               <CardTitle className="text-base">User Management</CardTitle>
               <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => showToast('Invite sent!')}>+ Invite User</Button>
             </CardHeader>
-            <CardContent className="p-0">
-              <table className="w-full">
+            <CardContent className="p-0 overflow-x-auto">
+              <table className="w-full min-w-[480px]">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50">
                     {['Name', 'Email', 'Role', 'Status', 'Actions'].map(h => (

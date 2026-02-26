@@ -55,7 +55,7 @@ export default function QuotesPage() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: 'Total Quoted', value: totals.all, color: 'text-slate-800' },
           { label: 'Accepted Value', value: totals.accepted, color: 'text-green-600' },
@@ -72,25 +72,27 @@ export default function QuotesPage() {
 
       {/* Filters */}
       <Card className="border-0 shadow-sm">
-        <CardContent className="p-4 flex gap-3">
+        <CardContent className="p-4 flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input placeholder="Search quotes..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
-          {['all', 'draft', 'sent', 'accepted', 'declined'].map(s => (
-            <Button key={s} variant={statusFilter === s ? 'default' : 'outline'} size="sm"
-              className={statusFilter === s ? 'bg-blue-600 text-white' : ''}
-              onClick={() => setStatusFilter(s)}>
-              {s.charAt(0).toUpperCase() + s.slice(1)}
-            </Button>
-          ))}
+          <div className="flex flex-wrap gap-2">
+            {['all', 'draft', 'sent', 'accepted', 'declined'].map(s => (
+              <Button key={s} variant={statusFilter === s ? 'default' : 'outline'} size="sm"
+                className={statusFilter === s ? 'bg-blue-600 text-white' : ''}
+                onClick={() => setStatusFilter(s)}>
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </Button>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
       {/* Table */}
       <Card className="border-0 shadow-sm">
-        <CardContent className="p-0">
-          <table className="w-full">
+        <CardContent className="p-0 overflow-x-auto">
+          <table className="w-full min-w-[640px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
                 {['Quote #', 'Customer', 'Created', 'Expires', 'Amount', 'Status', 'Actions'].map(h => (

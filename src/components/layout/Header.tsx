@@ -19,7 +19,7 @@ export function Header({ title, onMenuClick }: HeaderProps) {
       >
         <Menu className="h-5 w-5" />
       </Button>
-      <h1 className="text-lg font-semibold text-slate-800 flex-shrink-0">{title}</h1>
+      <h1 className="text-lg font-semibold text-slate-800 truncate min-w-0">{title}</h1>
       <div className="flex-1 max-w-sm hidden md:block">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />

@@ -39,12 +39,12 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6 max-w-7xl">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold text-slate-800">Reports & Analytics</h2>
           <p className="text-sm text-slate-500">Business performance overview</p>
         </div>
-        <Button variant="outline">
+        <Button variant="outline" className="self-start sm:self-auto">
           <Download className="h-4 w-4 mr-2" />Export PDF
         </Button>
       </div>
@@ -132,8 +132,8 @@ export default function ReportsPage() {
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-slate-700">Contractor Performance</CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          <table className="w-full">
+        <CardContent className="p-0 overflow-x-auto">
+          <table className="w-full min-w-[520px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
                 {['Contractor', 'Jobs Completed', 'Rating', 'Revenue Generated', 'Performance'].map(h => (

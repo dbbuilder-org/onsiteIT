@@ -66,7 +66,7 @@ export default function InvoicesPage() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: 'Revenue Collected', value: totals.paid, color: 'text-green-600', icon: CreditCard },
           { label: 'Outstanding', value: totals.outstanding, color: 'text-blue-600', icon: Send },
@@ -103,8 +103,8 @@ export default function InvoicesPage() {
 
       {/* Table */}
       <Card className="border-0 shadow-sm">
-        <CardContent className="p-0">
-          <table className="w-full">
+        <CardContent className="p-0 overflow-x-auto">
+          <table className="w-full min-w-[720px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
                 {['Invoice #', 'Customer', 'Created', 'Due Date', 'Amount', 'GST', 'Status', 'Actions'].map(h => (

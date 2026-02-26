@@ -102,8 +102,45 @@ export default function JobsPage() {
         </select>
       </div>
 
-      {/* Kanban */}
-      <div className="flex gap-4 overflow-x-auto pb-4" style={{ minHeight: '60vh' }}>
+      {/* Mobile list view (< md) */}
+      <div className="md:hidden space-y-5">
+        {columns.map((col) => {
+          const colJobs = getColumnJobs(col.key)
+          return (
+            <div key={col.key}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className={`h-2.5 w-2.5 rounded-full ${col.color}`} />
+                <span className="text-sm font-semibold text-slate-700">{col.label}</span>
+                <span className="ml-auto bg-slate-200 text-slate-600 text-xs font-semibold px-2 py-0.5 rounded-full">{colJobs.length}</span>
+              </div>
+              {colJobs.length === 0 ? (
+                <p className="text-xs text-slate-400 pl-4">No jobs</p>
+              ) : (
+                <div className="space-y-2">
+                  {colJobs.map((job) => (
+                    <div key={job.id}
+                      className={`bg-white rounded-xl shadow-sm border-l-4 ${priorityColors[job.priority] || 'border-l-slate-300'} p-3 cursor-pointer hover:shadow-md transition-all`}
+                      onClick={() => setSelectedJob(job)}>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <p className="text-sm font-semibold text-slate-800 line-clamp-1">{job.title}</p>
+                        <StatusBadge status={job.priority} />
+                      </div>
+                      <p className="text-xs text-slate-500">{job.customerName} · {job.suburb}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs text-slate-400">{formatDateTime(job.scheduledDate)}</span>
+                        <span className="text-xs font-semibold text-slate-700">{formatCurrency(job.totalAmount)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Kanban (md+) */}
+      <div className="hidden md:flex gap-4 overflow-x-auto pb-4" style={{ minHeight: '60vh' }}>
         {columns.map((col) => {
           const colJobs = getColumnJobs(col.key)
           return (
