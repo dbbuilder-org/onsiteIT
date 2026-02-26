@@ -65,7 +65,7 @@ export default function ContractorDashboard() {
 
       {/* Welcome + clock */}
       <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl p-6 text-white">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold mb-1">Good morning, {firstName}!</h2>
             <p className="text-slate-300 text-sm">{new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
@@ -73,7 +73,7 @@ export default function ContractorDashboard() {
           </div>
           <Button
             onClick={handleClock}
-            className={`${clockedIn ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600'} text-white border-0 px-6 py-3 h-auto`}
+            className={`${clockedIn ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600'} text-white border-0 px-6 py-3 h-auto self-start sm:self-auto`}
           >
             {clockedIn ? <><Square className="h-4 w-4 mr-2" />Clock Out</> : <><Play className="h-4 w-4 mr-2" />Clock In</>}
           </Button>

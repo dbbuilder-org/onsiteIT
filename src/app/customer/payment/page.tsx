@@ -86,16 +86,18 @@ export default function CustomerPaymentPage() {
         <CardContent>
           <div className="space-y-3">
             {cards.map(card => (
-              <div key={card.id} className={cn("flex items-center gap-4 p-4 rounded-xl border-2 transition-all",
+              <div key={card.id} className={cn("flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border-2 transition-all",
                 card.isDefault ? "border-blue-600 bg-blue-50/30" : "border-slate-200 bg-white")}>
-                <div className={`h-10 w-14 rounded-lg ${cardBrandColors[card.brand] || 'bg-slate-500'} flex items-center justify-center`}>
-                  <span className="text-white text-xs font-bold">{card.brand}</span>
+                <div className="flex items-center gap-3">
+                  <div className={`h-10 w-14 rounded-lg ${cardBrandColors[card.brand] || 'bg-slate-500'} flex items-center justify-center flex-shrink-0`}>
+                    <span className="text-white text-xs font-bold">{card.brand}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-slate-800">{card.brand} •••• {card.last4}</p>
+                    <p className="text-sm text-slate-500">Expires {card.expiry}</p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-800">{card.brand} •••• {card.last4}</p>
-                  <p className="text-sm text-slate-500">Expires {card.expiry}</p>
-                </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 sm:ml-auto">
                   {card.isDefault ? (
                     <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">Default</span>
                   ) : (
@@ -162,7 +164,7 @@ export default function CustomerPaymentPage() {
           ) : (
             <div className="space-y-3">
               {myInvoices.filter(i => i.status !== 'paid').map(inv => (
-                <div key={inv.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div key={inv.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
                   <div>
                     <p className="font-semibold text-slate-800">{inv.invoiceNumber}</p>
                     <p className="text-sm text-slate-500">Due {formatDate(inv.dueDate)}</p>
@@ -172,7 +174,7 @@ export default function CustomerPaymentPage() {
                     <StatusBadge status={inv.status} />
                     <Button
                       size="sm"
-                      className={cn("bg-blue-600 hover:bg-blue-700 text-white", payingInvoice === inv.id && "opacity-75")}
+                      className={cn("bg-blue-600 hover:bg-blue-700 text-white ml-auto sm:ml-0", payingInvoice === inv.id && "opacity-75")}
                       onClick={() => handlePay(inv.id)}
                       disabled={payingInvoice === inv.id}
                     >
@@ -191,8 +193,8 @@ export default function CustomerPaymentPage() {
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-slate-700">Payment History</CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          <table className="w-full">
+        <CardContent className="p-0 overflow-x-auto">
+          <table className="w-full min-w-[400px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
                 {['Invoice', 'Date', 'Amount', 'Status'].map(h => (

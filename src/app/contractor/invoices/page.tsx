@@ -54,8 +54,8 @@ export default function ContractorInvoicesPage() {
             <Download className="h-4 w-4 mr-2" />Download Statements
           </Button>
         </CardHeader>
-        <CardContent className="p-0">
-          <table className="w-full">
+        <CardContent className="p-0 overflow-x-auto">
+          <table className="w-full min-w-[560px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
                 {['Period', 'Hours', 'Jobs', 'Gross Pay', 'Status', 'Pay Date'].map(h => (

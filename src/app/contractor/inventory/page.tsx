@@ -57,8 +57,8 @@ export default function ContractorInventoryPage() {
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-slate-700">Van/Bag Stock</CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          <table className="w-full">
+        <CardContent className="p-0 overflow-x-auto">
+          <table className="w-full min-w-[520px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
                 {['Item', 'Category', 'Qty', 'Value', 'Actions'].map(h => (

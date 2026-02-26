@@ -77,27 +77,29 @@ export default function ContractorQuotesPage() {
                 <Button variant="outline" size="sm" onClick={addLineItem}><Plus className="h-3.5 w-3.5 mr-1" />Add Item</Button>
               </div>
               <div className="space-y-2">
-                <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-slate-500 px-1">
+                <div className="hidden sm:grid grid-cols-12 gap-2 text-xs font-semibold text-slate-500 px-1">
                   <span className="col-span-6">Description</span>
                   <span className="col-span-2">Qty</span>
                   <span className="col-span-3">Unit Price</span>
                   <span className="col-span-1"></span>
                 </div>
                 {lineItems.map((item, i) => (
-                  <div key={i} className="grid grid-cols-12 gap-2 items-center">
-                    <Input className="col-span-6 text-sm" placeholder="e.g. Labor - 2hrs"
+                  <div key={i} className="flex flex-col sm:grid sm:grid-cols-12 gap-2">
+                    <Input className="sm:col-span-6 text-sm" placeholder="e.g. Labor - 2hrs"
                       value={item.description}
                       onChange={(e) => setLineItems(prev => prev.map((li, idx) => idx === i ? { ...li, description: e.target.value } : li))}
                     />
-                    <Input className="col-span-2 text-sm" type="number" min="1" value={item.qty}
-                      onChange={(e) => setLineItems(prev => prev.map((li, idx) => idx === i ? { ...li, qty: Number(e.target.value) } : li))}
-                    />
-                    <Input className="col-span-3 text-sm" type="number" min="0" step="0.01" value={item.unitPrice}
-                      onChange={(e) => setLineItems(prev => prev.map((li, idx) => idx === i ? { ...li, unitPrice: Number(e.target.value) } : li))}
-                    />
-                    <Button variant="ghost" size="icon" className="col-span-1 h-8 w-8" onClick={() => removeLineItem(i)}>
-                      <Trash2 className="h-3.5 w-3.5 text-red-500" />
-                    </Button>
+                    <div className="flex gap-2 sm:contents">
+                      <Input className="flex-1 sm:col-span-2 text-sm" type="number" min="1" placeholder="Qty" value={item.qty}
+                        onChange={(e) => setLineItems(prev => prev.map((li, idx) => idx === i ? { ...li, qty: Number(e.target.value) } : li))}
+                      />
+                      <Input className="flex-[2] sm:col-span-3 text-sm" type="number" min="0" step="0.01" placeholder="Unit price" value={item.unitPrice}
+                        onChange={(e) => setLineItems(prev => prev.map((li, idx) => idx === i ? { ...li, unitPrice: Number(e.target.value) } : li))}
+                      />
+                      <Button variant="ghost" size="icon" className="sm:col-span-1 h-9 w-9 flex-shrink-0" onClick={() => removeLineItem(i)}>
+                        <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -125,8 +127,8 @@ export default function ContractorQuotesPage() {
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-slate-700">My Quotes ({myQuotes.length})</CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          <table className="w-full">
+        <CardContent className="p-0 overflow-x-auto">
+          <table className="w-full min-w-[500px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
                 {['Quote #', 'Customer', 'Created', 'Amount', 'Status'].map(h => (

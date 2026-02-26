@@ -43,12 +43,12 @@ export default function CustomerDashboard() {
     <div className="space-y-6 max-w-5xl">
       {/* Welcome */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 text-white">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold mb-1">Welcome back, {firstName}!</h2>
             <p className="text-blue-200 text-sm">{new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
           </div>
-          <Link href="/customer/book">
+          <Link href="/customer/book" className="self-start sm:self-auto">
             <Button className="bg-white text-blue-700 hover:bg-blue-50 border-0 font-semibold">
               <PlusCircle className="h-4 w-4 mr-2" />Book a Service
             </Button>

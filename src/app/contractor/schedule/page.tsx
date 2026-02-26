@@ -59,7 +59,7 @@ export default function ContractorSchedulePage() {
     <div className="space-y-6 max-w-5xl">
       {toast && <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm">{toast}</div>}
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h2 className="text-xl font-bold text-slate-800">My Schedule</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon"><ChevronLeft className="h-4 w-4" /></Button>
@@ -70,7 +70,8 @@ export default function ContractorSchedulePage() {
 
       {/* Weekly calendar */}
       <Card className="border-0 shadow-sm">
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-x-auto">
+          <div className="min-w-[480px]">
           <div className="grid grid-cols-7 border-b border-slate-100">
             {weekDates.map(({ day, date, isToday }) => (
               <div key={day} className={cn("text-center py-3 border-r border-slate-100 last:border-r-0",
@@ -107,6 +108,7 @@ export default function ContractorSchedulePage() {
                 </div>
               )
             })}
+          </div>
           </div>
         </CardContent>
       </Card>
